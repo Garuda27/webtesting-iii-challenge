@@ -1,37 +1,21 @@
+// Test away
+
 import React from 'react';
+import {render, fireEvent} from '@testing-library/react'
+import renderer from 'react-test-renderer'; 
+import Dashboard from './Dashboard';
 
-import Display from '../display/Display';
-import Controls from '../controls/Controls';
+describe('<Dashboard />', () => {
+  it('matches snapshot', () => {
+    const tree = renderer.create(<Dashboard />);
+    expect(tree.toJSON()).toMatchSnapshot();
+  });
 
-class Dashboard extends React.Component {
-  state = {
-    locked: false,
-    closed: false,
-  };
+    it("buttons text changes", () => {
+        const { getByText, queryByText } = render(<Dashboard />);
+        expect(queryByText(/open gate/i)).toBeFalsy();
+        fireEvent.click(getByText(/close Gate/i));
+        expect(queryByText(/open gate/i)).toBeTruthy();
+      });
 
-  render() {
-    const { closed, locked } = this.state;
-
-    return (
-      <>
-        <Display locked={locked} closed={closed} />
-        <Controls
-          locked={locked}
-          closed={closed}
-          toggleLocked={this.toggleLocked}
-          toggleClosed={this.toggleClosed}
-        />
-      </>
-    );
-  }
-
-  toggleLocked = () => {
-    this.setState(prev => ({ locked: !prev.locked }));
-  };
-
-  toggleClosed = () => {
-    this.setState(prev => ({ closed: !prev.closed }));
-  };
-}
-
-export default Dashboard;
+}); 
